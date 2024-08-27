@@ -18,7 +18,7 @@ def randTrans():
         'id': randStr(8),
         'date': randDate(),
         'amount': randFloat(-1000, 1000),
-        'category': random.choice(['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Health', 'Investments', 'Education', 'Business']),
+        'category': random.choice(['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Health', 'Investments', 'Education', 'Business', 'Charity']),
         'description': randStr(20)
     }
 
@@ -34,7 +34,7 @@ for _ in range(7):
         accounts[acct_id]['transactions'].append(trans)
 
 budgets = {}
-for cat in ['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Investments', 'Education', 'Business']:
+for cat in ['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Investments', 'Education', 'Business', 'Charity']:
     budgets[cat] = randFloat(1000, 5000)
 
 goals = {}
@@ -201,51 +201,36 @@ def interactiveFinanceDashboard():
         'Holiday Spending Tracker': holidaySpendingTracker(),
         'Charity Contributions': trackCharityContributions(),
         'Subscription Management': manageSubscriptions(),
-        'Carbon Footprint Tracker': carbonFootprintTracking()
+        'Carbon Footprint Tracker': carbonFootprintTracking(),
+        'Crowdfunding Contributions': trackCrowdfunding(),
+        'Insurance Policy Tracker': manageInsurancePolicies(),
+        'Credit Score Estimation': estimateCreditScore(),
+        'Loan Comparison Tool': compareLoans(),
+        'Family Budgeting Tool': manageFamilyBudget(),
+        'Career Progression Tracker': careerTracking(),
+        'Household Inventory Management': manageInventory(),
+        'Gifting Planner': planGifts(),
+        'Pet Expenses Tracker': managePetExpenses(),
+        'Vehicle Maintenance Schedule': manageVehicleMaintenance(),
+        'Home Improvement Tracker': trackHomeImprovements(),
+        'Health Savings Account Tracker': trackHealthSavings(),
+        'Fitness Expenses Tracker': manageFitnessExpenses(),
+        'Hobby Budget Tracker': manageHobbyBudget(),
+        'Vacation Planning Tool': planVacation(),
+        'Daily Expense Challenges': dailyChallenges(),
+        'Automated Expense Analysis': analyzeExpenses(),
+        'Interest Rate Optimizer': optimizeInterestRates(),
+        'Donation Tracker': manageDonations(),
+        'Emergency Contact List': manageEmergencyContacts(),
+        'Daily Reminders': setDailyReminders(),
+        'Monthly Spending Overview': monthlySpendingOverview(),
+        'Weekly Savings Goal Tracker': weeklySavingsGoals(),
+        'Customized Investment Portfolio': customizePortfolio(),
+        'Personalized Finance Tips': personalizedFinanceTips(),
+        'Spending Pattern Analysis': analyzeSpendingPatterns(),
+        'Debt Repayment Schedule': debtRepaymentSchedule(),
+        'Investment Growth Projection': projectInvestmentGrowth(),
+        'Savings Account Comparison': compareSavingsAccounts(),
+        'Budget Adjustment Alerts': budgetAdjustmentAlerts(),
+        'Personalized Loan Offers': personalizedLoanOffers()
     }
-
-# New Feature Functions
-def trackPreciousMetals():
-    metals = {'Gold': randFloat(50, 100), 'Silver': randFloat(25, 75), 'Platinum': randFloat(30, 80)}
-    return metals
-
-def dailyTransactionReport():
-    return [f"Date: {trans['date']}, Amount: {trans['amount']}, Category: {trans['category']}" for trans in transList]
-
-def estimateTaxes():
-    tax_bracket = 0.2
-    estimated_taxes = sum(t['amount'] * tax_bracket for acc in accounts for t in accounts[acc]['transactions'] if t['amount'] > 0)
-    return f"Estimated taxes: ${estimated_taxes:.2f}"
-
-def retirementPlan():
-    savings = sum(accounts[acc]['balance'] for acc in accounts)
-    retirement_goal = goals.get('Retirement', 100000)
-    years_to_retirement = (retirement_goal - savings) / (savings / 10)
-    return f"Years to retirement: {years_to_retirement:.2f}"
-
-def educationFundTracking():
-    education_fund = goals.get('Education', 20000)
-    spent = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == 'Education')
-    return f"Remaining in education fund: ${education_fund - spent:.2f}"
-
-def monthlyBudgetPlanner():
-    return {cat: budgets[cat] - sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == cat) for cat in budgets}
-
-def holidaySpendingTracker():
-    holiday_budget = 1000
-    spent = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] in ['Travel', 'Entertainment'])
-    return f"Remaining holiday budget: ${holiday_budget - spent:.2f}"
-
-def trackCharityContributions():
-    charity_total = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == 'Charity')
-    return f"Total contributions to charity: ${charity_total:.2f}"
-
-def manageSubscriptions():
-    subs = {'Netflix': 12.99, 'Spotify': 9.99, 'Amazon Prime': 119.00}
-    total_subs = sum(subs.values())
-    return f"Total monthly subscription cost: ${total_subs:.2f}"
-
-def carbonFootprintTracking():
-    miles_driven = random.randint(500, 2000)
-    carbon_footprint = miles_driven * 0.411
-    return f"Carbon footprint for the month: {carbon_footprint:.2f} kg CO2"
