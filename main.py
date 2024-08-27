@@ -18,31 +18,31 @@ def randTrans():
         'id': randStr(8),
         'date': randDate(),
         'amount': randFloat(-1000, 1000),
-        'category': random.choice(['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Health']),
+        'category': random.choice(['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Health', 'Investments', 'Education', 'Business']),
         'description': randStr(20)
     }
 
 transList = []
-for _ in range(500):
+for _ in range(700):
     transList.append(randTrans())
 
 accounts = {}
-for _ in range(5):
+for _ in range(7):
     acct_id = randStr(6)
-    accounts[acct_id] = {'balance': randFloat(1000, 10000), 'transactions': []}
+    accounts[acct_id] = {'balance': randFloat(1000, 20000), 'transactions': []}
     for trans in transList:
         accounts[acct_id]['transactions'].append(trans)
 
 budgets = {}
-for cat in ['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous']:
+for cat in ['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Investments', 'Education', 'Business']:
     budgets[cat] = randFloat(1000, 5000)
 
 goals = {}
-for goal in ['Vacation', 'Emergency Fund', 'New Car', 'Home Renovation', 'Gadget Upgrade']:
-    goals[goal] = randFloat(5000, 20000)
+for goal in ['Vacation', 'Emergency Fund', 'New Car', 'Home Renovation', 'Gadget Upgrade', 'Retirement']:
+    goals[goal] = randFloat(5000, 50000)
 
 receipts = {}
-for _ in range(100):
+for _ in range(150):
     rec_id = randStr(8)
     receipts[rec_id] = randStr(30)
 
@@ -111,7 +111,7 @@ def expenseClassification(t):
         return 'Expense'
 
 def manageCrypto():
-    crypto_assets = {'Bitcoin': 0.4, 'Ethereum': 1.8, 'Litecoin': 10.0}
+    crypto_assets = {'Bitcoin': 0.4, 'Ethereum': 1.8, 'Litecoin': 10.0, 'Dogecoin': 500.0}
     return crypto_assets
 
 def detectFraud(t):
@@ -125,17 +125,19 @@ def advancedFinancialAdvisor():
     advice = {
         'Save more': "Consider saving an additional 10% each month.",
         'Invest wisely': "Review your investment portfolio for better diversification.",
-        'Debt reduction': "Focus on reducing high-interest debt first."
+        'Debt reduction': "Focus on reducing high-interest debt first.",
+        'Crypto Investments': "Consider allocating a small percentage to cryptocurrency."
     }
     return advice
 
 def customDashboards():
     dbs = {'basic': {'view': 'Summary', 'widgets': ['balance', 'transactions', 'goals']}}
-    dbs['advanced'] = {'view': 'Full Overview', 'widgets': ['budgets', 'crypto', 'advisor']}
+    dbs['advanced'] = {'view': 'Full Overview', 'widgets': ['budgets', 'crypto', 'advisor', 'loan calculator', 'expense tracker']}
+    dbs['custom'] = {'view': 'User-Defined', 'widgets': ['income prediction', 'business tracking', 'emergency funds', 'investment analysis']}
     return dbs
 
 def personalNewsFeed():
-    return ['Crypto prices surge!', 'Stock market hits record high.', 'Savings account interest rates are declining.']
+    return ['Crypto prices surge!', 'Stock market hits record high.', 'Savings account interest rates are declining.', 'Real estate prices on the rise.']
 
 def roundUpSavings():
     for acc in accounts:
@@ -143,7 +145,7 @@ def roundUpSavings():
             specialSavings(t)
 
 def automaticInvestmentManagement():
-    investments = {'Stocks': 5000, 'Bonds': 3000, 'Real Estate': 10000}
+    investments = {'Stocks': 5000, 'Bonds': 3000, 'Real Estate': 10000, 'Crypto': 2000, 'Precious Metals': 3000}
     investments['Total'] = sum(investments.values())
     return investments
 
@@ -167,7 +169,7 @@ def emergencyFundsTracker():
     return f"Emergency funds are at ${goals['Emergency Fund']}."
 
 def investmentPortfolioAnalysis():
-    portfolio = {'Stocks': 4000, 'Bonds': 2000, 'Real Estate': 8000, 'Crypto': 1500}
+    portfolio = {'Stocks': 4000, 'Bonds': 2000, 'Real Estate': 8000, 'Crypto': 1500, 'Precious Metals': 2000}
     return portfolio
 
 def interactiveFinanceDashboard():
@@ -189,45 +191,61 @@ def interactiveFinanceDashboard():
         'Investment Management': automaticInvestmentManagement(),
         'News Feed': personalNewsFeed(),
         'Fraud Detection': detectFraud(randTrans()),
-        'Micro Investments': microInvest(100)
+        'Micro Investments': microInvest(100),
+        'Precious Metals Tracking': trackPreciousMetals(),
+        'Daily Transaction Report': dailyTransactionReport(),
+        'Tax Estimation': estimateTaxes(),
+        'Retirement Planning': retirementPlan(),
+        'Education Fund Tracker': educationFundTracking(),
+        'Monthly Budget Planner': monthlyBudgetPlanner(),
+        'Holiday Spending Tracker': holidaySpendingTracker(),
+        'Charity Contributions': trackCharityContributions(),
+        'Subscription Management': manageSubscriptions(),
+        'Carbon Footprint Tracker': carbonFootprintTracking()
     }
 
-# Adding user interaction through questions
-def askUserQuestions():
-    print("Welcome to the financial management system!")
-    user_name = input("Please enter your name: ")
-    print(f"Hello, {user_name}! Let's set up your financial dashboard.")
-    
-    income = float(input("Enter your monthly income: "))
-    savings_goal = float(input("Enter your savings goal: "))
-    current_savings = float(input("Enter your current savings amount: "))
-    
-    print("Calculating your savings plan...")
-    months_to_goal = (savings_goal - current_savings) / income
-    print(f"It will take you approximately {months_to_goal:.2f} months to reach your savings goal of ${savings_goal}.")
-    
-    invest_option = input("Would you like to invest your savings? (yes/no): ")
-    if invest_option.lower() == 'yes':
-        invest_amount = float(input("How much would you like to invest? "))
-        investment_return = invest_amount * randFloat(1.05, 1.2)
-        print(f"Your investment could potentially grow to ${investment_return:.2f}.")
-    else:
-        print("No investment made. Continuing with savings plan.")
-    
-    print("Setting up personalized budget categories...")
-    for cat in budgets.keys():
-        user_budget = float(input(f"Enter budget for {cat}: "))
-        addBudget(cat, user_budget)
-    
-    print("Finalizing your setup...")
-    custom_dashboard = customDashboards()
-    print(f"{user_name}, your custom dashboard is ready!")
-    return custom_dashboard
+# New Feature Functions
+def trackPreciousMetals():
+    metals = {'Gold': randFloat(50, 100), 'Silver': randFloat(25, 75), 'Platinum': randFloat(30, 80)}
+    return metals
 
-def startSystem():
-    askUserQuestions()
-    dashboard = interactiveFinanceDashboard()
-    for feature, output in dashboard.items():
-        print(f"{feature}: {output}")
+def dailyTransactionReport():
+    return [f"Date: {trans['date']}, Amount: {trans['amount']}, Category: {trans['category']}" for trans in transList]
 
-startSystem()
+def estimateTaxes():
+    tax_bracket = 0.2
+    estimated_taxes = sum(t['amount'] * tax_bracket for acc in accounts for t in accounts[acc]['transactions'] if t['amount'] > 0)
+    return f"Estimated taxes: ${estimated_taxes:.2f}"
+
+def retirementPlan():
+    savings = sum(accounts[acc]['balance'] for acc in accounts)
+    retirement_goal = goals.get('Retirement', 100000)
+    years_to_retirement = (retirement_goal - savings) / (savings / 10)
+    return f"Years to retirement: {years_to_retirement:.2f}"
+
+def educationFundTracking():
+    education_fund = goals.get('Education', 20000)
+    spent = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == 'Education')
+    return f"Remaining in education fund: ${education_fund - spent:.2f}"
+
+def monthlyBudgetPlanner():
+    return {cat: budgets[cat] - sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == cat) for cat in budgets}
+
+def holidaySpendingTracker():
+    holiday_budget = 1000
+    spent = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] in ['Travel', 'Entertainment'])
+    return f"Remaining holiday budget: ${holiday_budget - spent:.2f}"
+
+def trackCharityContributions():
+    charity_total = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == 'Charity')
+    return f"Total contributions to charity: ${charity_total:.2f}"
+
+def manageSubscriptions():
+    subs = {'Netflix': 12.99, 'Spotify': 9.99, 'Amazon Prime': 119.00}
+    total_subs = sum(subs.values())
+    return f"Total monthly subscription cost: ${total_subs:.2f}"
+
+def carbonFootprintTracking():
+    miles_driven = random.randint(500, 2000)
+    carbon_footprint = miles_driven * 0.411
+    return f"Carbon footprint for the month: {carbon_footprint:.2f} kg CO2"
