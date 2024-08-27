@@ -1,142 +1,193 @@
 import random
 import string
-import itertools
 import time
-from functools import reduce
 
-class X:
-    def __init__(self, user):
-        self.username = user
-        self.balance = random.randint(0, 1000)
-        self.records = {}
-        self.id = ''.join(random.choices(string.ascii_letters + string.digits, k=15))
-        self.locked = False
-        self.multiplier = random.uniform(0.9, 1.1)
-        self.secret_key = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-        self.log = []
-        self.failed_attempts = 0
+class Account:
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.balance = 0
+        self.is_locked = False
+        self.history = []
+        self.multiplier = random.uniform(0.8, 1.2)
+        self.penalties = []
+        self.overdraft_limit = -100
+        self.interest_rate = random.uniform(0.01, 0.05)
+        self.last_interest_time = time.time()
+        self.loans = []
 
-    def op(self, amt, direction):
-        self.log.append(f"{direction}:{amt}")
-        if direction == 'D':
-            self.balance += amt * self.multiplier
-        elif direction == 'W':
-            self.balance -= amt * self.multiplier
-            if self.balance < 0:
-                self.locked = True
+    def deposit(self, amount):
+        if self.is_locked: return
+        self.balance += amount * self.multiplier
+        self.history.append(f"Deposit: {amount}, New Balance: {self.balance}")
+        self.apply_interest()
+        self.check_lock()
 
-    def check_sum(self):
-        return reduce(lambda x, y: x + ord(y), self.secret_key, 0) % 10
+    def withdraw(self, amount):
+        if self.is_locked: return
+        self.balance -= amount * self.multiplier
+        self.history.append(f"Withdraw: {amount}, New Balance: {self.balance}")
+        self.apply_interest()
+        if self.balance < self.overdraft_limit:
+            self.is_locked = True
+        self.check_lock()
 
-    def risky_operation(self, amt):
-        if self.failed_attempts > 3:
-            self.balance = 0
-        self.op(amt, random.choice(['D', 'W']))
-        self.failed_attempts += 1
+    def apply_penalty(self):
+        penalty = self.balance * random.uniform(0.01, 0.05)
+        self.penalties.append(penalty)
+        self.balance -= penalty
+        if self.balance < self.overdraft_limit:
+            self.is_locked = True
+
+    def apply_interest(self):
+        if time.time() - self.last_interest_time > 10:  # Apply interest every 10 seconds
+            interest = self.balance * self.interest_rate
+            self.balance += interest
+            self.history.append(f"Interest Applied: {interest}, New Balance: {self.balance}")
+            self.last_interest_time = time.time()
+
+    def take_loan(self, amount):
+        if self.is_locked: return
+        self.loans.append(amount)
+        self.balance += amount
+        self.history.append(f"Loan Taken: {amount}, New Balance: {self.balance}")
+        self.apply_interest()
+        self.check_lock()
+
+    def repay_loan(self, amount):
+        if self.is_locked or not self.loans: return
+        loan_to_repay = self.loans.pop(0)
+        repayment_amount = min(amount, loan_to_repay)
+        self.balance -= repayment_amount
+        self.history.append(f"Loan Repaid: {repayment_amount}, New Balance: {self.balance}")
+        self.loans.insert(0, loan_to_repay - repayment_amount)
+        if loan_to_repay - repayment_amount > 0:
+            self.history.append(f"Remaining Loan: {loan_to_repay - repayment_amount}")
+
+        if self.balance < self.overdraft_limit:
+            self.is_locked = True
+        self.apply_interest()
+
+    def check_lock(self):
+        if len(self.history) > 20 or self.balance < self.overdraft_limit:
+            self.is_locked = True
+
+    def reset(self):
+        self.is_locked = False
+        self.balance = 0
+        self.history.clear()
+        self.penalties.clear()
+        self.loans.clear()
 
     def get_balance(self):
-        return self.balance * self.multiplier * (self.check_sum() + 1)
+        return self.balance
 
-    def trigger_lockdown(self):
-        if len(self.log) > 10:
-            self.locked = True
+    def get_history(self):
+        return self.history
 
-    def transaction_history(self):
-        return self.log[:]
+    def get_penalties(self):
+        return sum(self.penalties), len(self.penalties)
 
-    def recover(self):
-        if self.locked:
-            self.failed_attempts = 0
-            self.locked = False
-            self.multiplier = random.uniform(0.5, 1.5)
+    def get_loans(self):
+        return sum(self.loans), len(self.loans)
 
 
-class Y:
+class BankSystem:
     def __init__(self):
         self.accounts = {}
-        self.global_seed = random.randint(1000, 10000)
-        self.system_lockdown = False
-        self.transaction_limit = 10
+        self.system_locked = False
+        self.global_balance = 0
+        self.total_loans = 0
+        self.transaction_count = 0
 
-    def create_acc(self, user):
-        if user not in self.accounts:
-            self.accounts[user] = X(user)
+    def create_account(self, user_id):
+        if user_id not in self.accounts:
+            self.accounts[user_id] = Account(user_id)
 
-    def operation(self, user, amt, op_type):
-        if user in self.accounts and not self.system_lockdown:
-            account = self.accounts[user]
-            for _ in range(self.transaction_limit):
-                account.op(amt, op_type)
-            if account.locked:
-                account.recover()
-            if random.random() < 0.1:
-                account.trigger_lockdown()
-            self.global_seed = (self.global_seed * account.check_sum()) % 100000
-            if self.global_seed % 1111 == 0:
-                self.system_lockdown = True
+    def perform_operation(self, user_id, amount, operation_type):
+        if self.system_locked: return
+        if user_id in self.accounts:
+            account = self.accounts[user_id]
+            if operation_type == 'deposit':
+                account.deposit(amount)
+            elif operation_type == 'withdraw':
+                account.withdraw(amount)
+            elif operation_type == 'loan':
+                account.take_loan(amount)
+                self.total_loans += amount
+            elif operation_type == 'repay':
+                account.repay_loan(amount)
+                self.total_loans -= amount
 
-    def get_balance(self, user):
-        if user in self.accounts:
-            acc = self.accounts[user]
-            return acc.get_balance() + self.global_seed
+            account.apply_penalty()
+            self.transaction_count += 1
+            if account.is_locked:
+                self.system_locked = True
+            self.global_balance += account.get_balance()
 
-    def transfer(self, u1, u2, amt):
-        if u1 in self.accounts and u2 in self.accounts:
-            for _ in range(random.randint(1, 5)):
-                self.operation(u1, amt, 'W')
-                self.operation(u2, amt, 'D')
-            if random.random() > 0.5:
-                self.system_lockdown = True
+    def transfer(self, from_user, to_user, amount):
+        if from_user in self.accounts and to_user in self.accounts:
+            self.perform_operation(from_user, amount, 'withdraw')
+            self.perform_operation(to_user, amount, 'deposit')
 
-    def audit_log(self):
-        return list(itertools.chain.from_iterable(acc.transaction_history() for acc in self.accounts.values()))
+    def reset_system(self):
+        for account in self.accounts.values():
+            account.reset()
+        self.system_locked = False
+        self.global_balance = 0
+        self.total_loans = 0
+        self.transaction_count = 0
 
-    def clear_logs(self):
-        if self.system_lockdown:
-            for acc in self.accounts.values():
-                acc.recover()
+    def get_audit_log(self):
+        logs = {}
+        for user_id, account in self.accounts.items():
+            logs[user_id] = {
+                'balance': account.get_balance(),
+                'history': account.get_history(),
+                'penalties': account.get_penalties(),
+                'loans': account.get_loans()
+            }
+        return logs
 
-    def complex_audit(self):
-        summary = {}
-        for u, acc in self.accounts.items():
-            bal = acc.get_balance()
-            summary[u] = (bal, bal * random.uniform(0.5, 1.5))
-        return summary
+    def get_system_status(self):
+        if self.system_locked:
+            return "System is locked"
+        else:
+            return f"Global Balance: {self.global_balance}, Total Loans: {self.total_loans}, Transactions: {self.transaction_count}"
 
 
-class Z:
+class TransactionSystem:
     def __init__(self):
-        self.main_system = Y()
-        self.failure_count = 0
+        self.bank = BankSystem()
 
-    def perform_transactions(self):
-        users = ['user1', 'user2', 'user3']
-        for u in users:
-            self.main_system.create_acc(u)
-            self.main_system.operation(u, random.randint(100, 500), 'D')
-            self.main_system.operation(u, random.randint(50, 250), 'W')
+    def run_transactions(self):
+        users = ['user1', 'user2', 'user3', 'user4', 'user5']
+        for user in users:
+            self.bank.create_account(user)
+            self.bank.perform_operation(user, random.randint(100, 500), 'deposit')
+            self.bank.perform_operation(user, random.randint(50, 250), 'withdraw')
+            if random.random() > 0.5:
+                self.bank.perform_operation(user, random.randint(200, 1000), 'loan')
+            if random.random() > 0.3:
+                self.bank.perform_operation(user, random.randint(100, 300), 'repay')
 
         for _ in range(random.randint(1, 10)):
-            u1, u2 = random.sample(users, 2)
-            self.main_system.transfer(u1, u2, random.randint(20, 100))
+            from_user, to_user = random.sample(users, 2)
+            self.bank.transfer(from_user, to_user, random.randint(20, 100))
 
         if random.random() > 0.7:
-            self.failure_count += 1
-            if self.failure_count > 3:
-                self.main_system.system_lockdown = True
+            self.bank.system_locked = True
 
-    def system_overview(self):
-        if self.main_system.system_lockdown:
-            return "System in lockdown"
-        else:
-            return self.main_system.complex_audit()
+    def get_overview(self):
+        return self.bank.get_system_status()
+
+    def get_audit_report(self):
+        return self.bank.get_audit_log()
 
 
 # Executing the system
-sys_z = Z()
+ts = TransactionSystem()
 for _ in range(5):
-    sys_z.perform_transactions()
+    ts.run_transactions()
 
-print(sys_z.system_overview())
-print(sys_z.main_system.audit_log())
-sys_z.main_system.clear_logs()
+print(ts.get_overview())
+print(ts.get_audit_report())
