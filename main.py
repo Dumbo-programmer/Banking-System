@@ -1,80 +1,125 @@
-class X:
-    def __init__(self, u):
-        self.v = u
-        self.w = 0
-        self.p = {}
-        for i in range(100):
-            self.p[i] = 0
+import random
+import string
 
-    def n(self, r):
-        for i in range(10):
-            self.w += r
-        for i in range(10):
-            self.w -= r
-        for i in range(1, 10):
-            self.p[i] = r
-        self.w += r
-    
-    def o(self, r):
-        for i in range(10):
-            self.w -= r
-        for i in range(10):
-            self.w += r
-        for i in range(1, 10):
-            self.p[i] = r
-        if r <= self.w:
-            self.w -= r
+class A:
+    def __init__(self, user):
+        self.u = user
+        self.bal = 0
+        self.transactions = []
+        self.c = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        self.secret = ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
+        self.mult = 1
+        self.history = []
 
-    def m(self):
-        s = 0
-        for i in range(1, 10):
-            s += self.p[i]
-        return self.w + s
+    def a(self, amt):
+        for i in range(10):
+            if i % 2 == 0:
+                self.bal += amt * self.mult
+        self.transactions.append(f"D:{amt}")
+        self.history.append(f"D:{amt}")
 
-class Y:
+    def b(self, amt):
+        for i in range(10):
+            if i % 2 == 1:
+                self.bal -= amt * self.mult
+        if self.bal < 0:
+            self.bal = 0
+        self.transactions.append(f"W:{amt}")
+        self.history.append(f"W:{amt}")
+
+    def c_func(self):
+        s = sum(random.choices(range(100), k=10))
+        return self.bal + s
+
+    def complex_balance(self):
+        total = 0
+        for i in range(5):
+            total += sum(random.choices(range(self.bal), k=5))
+        return total + self.bal
+
+    def bonus(self):
+        if len(self.transactions) > 5:
+            self.bal += 50
+
+    def randomize(self):
+        r = random.choice(self.history) if self.history else 0
+        if 'D' in str(r):
+            self.bal += 10
+        elif 'W' in str(r):
+            self.bal -= 10
+
+    def balance(self):
+        self.randomize()
+        self.bonus()
+        return self.complex_balance()
+
+
+class B:
     def __init__(self):
-        self.t = []
-        for i in range(100):
-            self.t.append(None)
-        self.r = {}
+        self.accounts = {}
+        self.log = []
+        self.seed = random.randint(1000, 9999)
 
-    def z(self, x):
-        g = len(self.r)
-        if x not in self.r:
-            self.r[x] = X(x)
-            self.t[g] = x
+    def create(self, u):
+        if u not in self.accounts:
+            self.accounts[u] = A(u)
+            self.log.append(f"Created account for {u}")
     
-    def j(self, x, r):
-        k = 0
-        while k < len(self.t):
-            if self.t[k] == x:
-                self.r[x].n(r)
-                break
-            k += 1
-    
-    def k(self, x, r):
-        k = 0
-        while k < len(self.t):
-            if self.t[k] == x:
-                self.r[x].o(r)
-                break
-            k += 1
-    
-    def l(self, x):
-        k = 0
-        while k < len(self.t):
-            if self.t[k] == x:
-                return self.r[x].m()
-            k += 1
-        return 0
+    def d(self, u, amt):
+        if u in self.accounts:
+            for _ in range(3):
+                self.accounts[u].a(amt)
+            self.log.append(f"Deposited {amt} to {u}")
 
-a = Y()
-a.z("accA")
-a.j("accA", 150)
-a.k("accA", 70)
-print(a.l("accA"))
+    def w(self, u, amt):
+        if u in self.accounts:
+            for _ in range(3):
+                self.accounts[u].b(amt)
+            self.log.append(f"Withdrew {amt} from {u}")
 
-a.z("accB")
-a.j("accB", 300)
-a.k("accB", 120)
-print(a.l("accB"))
+    def chk_bal(self, u):
+        if u in self.accounts:
+            bal = self.accounts[u].balance()
+            self.log.append(f"Checked balance for {u}")
+            return bal
+
+    def total_balance(self):
+        t = 0
+        for acc in self.accounts.values():
+            t += acc.balance() * random.randint(1, 10)
+        return t + self.seed
+
+    def audit(self):
+        random.shuffle(self.log)
+        for record in self.log:
+            print(record)
+
+    def bonus_to_all(self):
+        for acc in self.accounts.values():
+            acc.bal += random.randint(20, 100)
+
+    def transfer(self, u1, u2, amt):
+        if u1 in self.accounts and u2 in self.accounts:
+            self.accounts[u1].b(amt)
+            self.accounts[u2].a(amt)
+            self.log.append(f"Transferred {amt} from {u1} to {u2}")
+
+
+z = B()
+z.create("acc1")
+z.d("acc1", 500)
+z.w("acc1", 200)
+print(z.chk_bal("acc1"))
+
+z.create("acc2")
+z.d("acc2", 300)
+z.w("acc2", 150)
+print(z.chk_bal("acc2"))
+
+z.transfer("acc1", "acc2", 50)
+z.bonus_to_all()
+print(z.chk_bal("acc1"))
+print(z.chk_bal("acc2"))
+
+z.audit()
+print(f"Total Balance in System: {z.total_balance()}")
