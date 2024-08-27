@@ -1,264 +1,201 @@
 import random
 import string
-import time
-from datetime import datetime, timedelta
+import datetime
 
-class Account:
-    def __init__(self, user_id, acc_type='Basic'):
-        self.user_id = user_id
-        self.balance = 0
-        self.is_locked = False
-        self.history = []
-        self.multiplier = random.uniform(0.8, 1.2)
-        self.penalties = []
-        self.overdraft_limit = -100
-        self.interest_rate = random.uniform(0.01, 0.05)
-        self.last_interest_time = time.time()
-        self.loans = []
-        self.acc_type = acc_type
-        self.investments = []
-        self.rewards = 0
-        self.savings_balance = 0
-        self.fraud_flagged = False
-        self.notifications = []
-        self.recurring_transactions = []
-        self.joint_users = [user_id]
-        self.credit_score = random.randint(600, 750)
-        self.currency = 'USD'
-        self.budgets = {}
-        self.transaction_categories = []
-        self.emergency_fund = 0
-        self.mfa_enabled = False
-        self.mfa_code = None
+def randStr(n):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=n))
 
-        if acc_type == 'Premium':
-            self.interest_rate *= 1.5
-            self.overdraft_limit = -500
+def randDate():
+    start_date = datetime.date(2020, 1, 1)
+    end_date = datetime.date(2023, 12, 31)
+    return start_date + (end_date - start_date) * random.random()
 
-    def deposit(self, amount, savings=False, category='Miscellaneous'):
-        if self.is_locked: return
-        if savings:
-            self.savings_balance += amount * self.multiplier
-            self.history.append(f"Savings Deposit: {amount} {self.currency}, New Savings Balance: {self.savings_balance}")
-        else:
-            self.balance += amount * self.multiplier
-            self.history.append(f"Deposit: {amount} {self.currency}, Category: {category}, New Balance: {self.balance}")
-            self.update_budget(category, amount)
-            self.check_emergency_fund()
-        self.apply_interest()
-        self.check_lock()
+def randFloat(minV, maxV):
+    return round(random.uniform(minV, maxV), 2)
 
-    def withdraw(self, amount, savings=False, category='Miscellaneous'):
-        if self.is_locked: return
-        if savings:
-            if self.savings_balance >= amount:
-                self.savings_balance -= amount * self.multiplier
-                self.history.append(f"Savings Withdrawal: {amount} {self.currency}, New Savings Balance: {self.savings_balance}")
-            else:
-                self.notifications.append("Insufficient savings balance for withdrawal.")
-        else:
-            fee = self.apply_transaction_fee()
-            self.balance -= (amount + fee) * self.multiplier
-            self.history.append(f"Withdraw: {amount} {self.currency}, Fee: {fee}, Category: {category}, New Balance: {self.balance}")
-            self.update_budget(category, -amount)
-            self.apply_interest()
-            if self.balance < self.overdraft_limit:
-                self.is_locked = True
-        self.check_lock()
+def randTrans():
+    return {
+        'id': randStr(8),
+        'date': randDate(),
+        'amount': randFloat(-1000, 1000),
+        'category': random.choice(['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous', 'Health']),
+        'description': randStr(20)
+    }
 
-    def apply_penalty(self):
-        penalty = self.balance * random.uniform(0.01, 0.05)
-        self.penalties.append(penalty)
-        self.balance -= penalty
-        if self.balance < self.overdraft_limit:
-            self.is_locked = True
-            self.notifications.append("Account locked due to penalty.")
-        self.check_lock()
+transList = []
+for _ in range(500):
+    transList.append(randTrans())
 
-    def apply_interest(self):
-        if time.time() - self.last_interest_time > 10:  # Apply interest every 10 seconds
-            interest = self.balance * self.interest_rate
-            self.balance += interest
-            self.history.append(f"Interest Applied: {interest} {self.currency}, New Balance: {self.balance}")
-            self.last_interest_time = time.time()
+accounts = {}
+for _ in range(5):
+    acct_id = randStr(6)
+    accounts[acct_id] = {'balance': randFloat(1000, 10000), 'transactions': []}
+    for trans in transList:
+        accounts[acct_id]['transactions'].append(trans)
 
-    def take_loan(self, amount):
-        if self.is_locked: return
-        rate = self.adjust_loan_rate()
-        self.loans.append((amount, rate))
-        self.balance += amount
-        self.history.append(f"Loan Taken: {amount} {self.currency}, Interest Rate: {rate}, New Balance: {self.balance}")
-        self.apply_interest()
-        self.check_lock()
+budgets = {}
+for cat in ['Groceries', 'Rent', 'Utilities', 'Entertainment', 'Travel', 'Savings', 'Miscellaneous']:
+    budgets[cat] = randFloat(1000, 5000)
 
-    def repay_loan(self, amount):
-        if self.is_locked or not self.loans: return
-        loan_to_repay = self.loans.pop(0)
-        repayment_amount = min(amount, loan_to_repay[0])
-        self.balance -= repayment_amount
-        self.history.append(f"Loan Repaid: {repayment_amount} {self.currency}, New Balance: {self.balance}")
-        self.loans.insert(0, (loan_to_repay[0] - repayment_amount, loan_to_repay[1]))
-        if loan_to_repay[0] - repayment_amount > 0:
-            self.history.append(f"Remaining Loan: {loan_to_repay[0] - repayment_amount}")
-        if self.balance < self.overdraft_limit:
-            self.is_locked = True
-            self.notifications.append("Account locked due to loan repayment.")
-        self.apply_interest()
+goals = {}
+for goal in ['Vacation', 'Emergency Fund', 'New Car', 'Home Renovation', 'Gadget Upgrade']:
+    goals[goal] = randFloat(5000, 20000)
 
-    def invest(self, portfolio, amount):
-        if self.is_locked or self.balance < amount: return
-        risk = random.uniform(0.7, 1.3)
-        profit_loss = amount * (random.uniform(0.05, 0.2) if portfolio == 'high-risk' else random.uniform(0.02, 0.1)) * risk
-        self.balance += profit_loss - amount
-        self.investments.append((portfolio, amount, profit_loss))
-        self.history.append(f"Invested in {portfolio}: {amount} {self.currency}, Profit/Loss: {profit_loss}, New Balance: {self.balance}")
-        self.check_lock()
+receipts = {}
+for _ in range(100):
+    rec_id = randStr(8)
+    receipts[rec_id] = randStr(30)
 
-    def apply_transaction_fee(self):
-        fee = 0
-        if self.acc_type == 'Basic':
-            fee = 2
-        elif self.acc_type == 'Premium':
-            fee = 1
-        return fee
+def addTransaction(acc, t):
+    accounts[acc]['transactions'].append(t)
 
-    def add_reward(self):
-        reward = random.randint(5, 20)
-        self.rewards += reward
-        self.history.append(f"Reward Earned: {reward} {self.currency}, Total Rewards: {self.rewards}")
+def viewTransactions(acc):
+    return accounts[acc]['transactions']
 
-    def fraud_check(self, amount):
-        if abs(amount) > self.balance * 0.9 or len(self.history) > 50:
-            self.fraud_flagged = True
-            self.notifications.append("Fraudulent activity detected!")
-            self.is_locked = True
+def addBudget(cat, amt):
+    budgets[cat] = amt
 
-    def check_lock(self):
-        if self.fraud_flagged or len(self.history) > 30 or self.balance < self.overdraft_limit:
-            self.is_locked = True
+def viewBudgets():
+    return budgets
 
-    def reset(self):
-        self.is_locked = False
-        self.balance = 0
-        self.history.clear()
-        self.penalties.clear()
-        self.loans.clear()
-        self.investments.clear()
-        self.rewards = 0
-        self.savings_balance = 0
-        self.fraud_flagged = False
-        self.notifications.clear()
+def addGoal(name, amt):
+    goals[name] = amt
 
-    def get_balance(self):
-        return self.balance
+def viewGoals():
+    return goals
 
-    def get_history(self):
-        return self.history
+# Adding more feature complexity
+def viewBalance():
+    total_balance = 0
+    for account in accounts:
+        total_balance += accounts[account]['balance']
+    return total_balance
 
-    def get_penalties(self):
-        return sum(self.penalties), len(self.penalties)
+def checkBudgets():
+    over_budget = {}
+    for cat in budgets:
+        spent = sum(t['amount'] for acc in accounts for t in accounts[acc]['transactions'] if t['category'] == cat)
+        if spent > budgets[cat]:
+            over_budget[cat] = spent - budgets[cat]
+    return over_budget
 
-    def get_loans(self):
-        return sum([loan[0] for loan in self.loans]), len(self.loans)
+def randomizeGoals():
+    for g in goals:
+        goals[g] += randFloat(-500, 500)
+    return goals
 
-    def get_rewards(self):
-        return self.rewards
+def specialSavings(t):
+    if t['amount'] < 0:
+        rounded = round(t['amount']) - t['amount']
+        if 'Savings' not in budgets:
+            budgets['Savings'] = 0
+        budgets['Savings'] += rounded
 
-    def get_investments(self):
-        return self.investments
+def incomePrediction():
+    predict = {}
+    for cat in budgets:
+        predict[cat] = randFloat(1000, 3000)
+    return predict
 
-    def get_notifications(self):
-        return self.notifications
+def collaborativeBudgets():
+    shared = sum(budgets.values()) * 1.15
+    return shared
 
-    def set_recurring_transaction(self, amount, frequency, operation_type, savings=False):
-        self.recurring_transactions.append((amount, frequency, operation_type, savings))
+def calcLoan(loan_amount, interest_rate, term_years):
+    monthly_payment = loan_amount * (interest_rate / 100) / (1 - (1 + interest_rate / 100) ** -term_years)
+    return monthly_payment
 
-    def process_recurring_transactions(self):
-        for transaction in self.recurring_transactions:
-            amount, frequency, operation_type, savings = transaction
-            if operation_type == 'deposit':
-                self.deposit(amount, savings=savings)
-            elif operation_type == 'withdraw':
-                self.withdraw(amount, savings=savings)
+def expenseClassification(t):
+    if t['amount'] > 0:
+        return 'Income'
+    else:
+        return 'Expense'
 
-    def add_joint_user(self, user_id):
-        self.joint_users.append(user_id)
+def manageCrypto():
+    crypto_assets = {'Bitcoin': 0.4, 'Ethereum': 1.8, 'Litecoin': 10.0}
+    return crypto_assets
 
-    def simulate_credit_score(self):
-        score_change = random.randint(-20, 20)
-        self.credit_score = min(max(self.credit_score + score_change, 300), 850)
-        self.history.append(f"Credit Score Change: {score_change}, New Credit Score: {self.credit_score}")
+def detectFraud(t):
+    suspicious = random.choice([True, False])
+    return suspicious
 
-    def adjust_loan_rate(self):
-        return random.uniform(0.05, 0.1) if self.credit_score > 700 else random.uniform(0.1, 0.2)
+def calculateDebtConsolidation(debts):
+    return sum(debts) / len(debts)
 
-    def generate_statement(self):
-        statement = f"Monthly Statement for User {self.user_id}\n"
-        statement += f"Date: {datetime.now().strftime('%Y-%m-%d')}\n"
-        statement += f"Balance: {self.balance} {self.currency}\n"
-        statement += f"Savings Balance: {self.savings_balance} {self.currency}\n"
-        statement += f"Loans: {self.get_loans()[0]} {self.currency}\n"
-        statement += f"Investments: {len(self.get_investments())} active\n"
-        statement += f"Rewards: {self.get_rewards()} {self.currency}\n"
-        statement += f"Credit Score: {self.credit_score}\n"
-        statement += "Recent Transactions:\n"
-        statement += "\n".join(self.history[-10:])
-        return statement
+def advancedFinancialAdvisor():
+    advice = {
+        'Save more': "Consider saving an additional 10% each month.",
+        'Invest wisely': "Review your investment portfolio for better diversification.",
+        'Debt reduction': "Focus on reducing high-interest debt first."
+    }
+    return advice
 
-    def convert_currency(self, amount, target_currency):
-        conversion_rates = {
-            'USD': 1, 'EUR': 0.85, 'JPY': 110, 'GBP': 0.75
-        }
-        if self.currency in conversion_rates and target_currency in conversion_rates:
-            converted_amount = amount * conversion_rates[target_currency] / conversion_rates[self.currency]
-            self.history.append(f"Converted {amount} {self.currency} to {converted_amount} {target_currency}")
-            return converted_amount
-        else:
-            self.notifications.append(f"Currency conversion not supported for {target_currency}")
-            return amount
+def customDashboards():
+    dbs = {'basic': {'view': 'Summary', 'widgets': ['balance', 'transactions', 'goals']}}
+    dbs['advanced'] = {'view': 'Full Overview', 'widgets': ['budgets', 'crypto', 'advisor']}
+    return dbs
 
-    def set_budget(self, category, limit):
-        self.budgets[category] = limit
+def personalNewsFeed():
+    return ['Crypto prices surge!', 'Stock market hits record high.', 'Savings account interest rates are declining.']
 
-    def update_budget(self, category, amount):
-        if category in self.budgets:
-            self.budgets[category] -= amount
-            if self.budgets[category] < 0:
-                self.notifications.append(f"Budget exceeded for {category}")
+def roundUpSavings():
+    for acc in accounts:
+        for t in accounts[acc]['transactions']:
+            specialSavings(t)
 
-    def check_emergency_fund(self):
-        if self.balance > 500:
-            surplus = (self.balance - 500) * 0.2
-            self.emergency_fund += surplus
-            self.balance -= surplus
-            self.history.append(f"Transferred {surplus} {self.currency} to Emergency Fund, New Balance: {self.balance}")
+def automaticInvestmentManagement():
+    investments = {'Stocks': 5000, 'Bonds': 3000, 'Real Estate': 10000}
+    investments['Total'] = sum(investments.values())
+    return investments
 
-    def enable_mfa(self):
-        self.mfa_enabled = True
-        self.generate_mfa_code()
+def financialLockdown(lock_time):
+    return f"Financial transactions are locked until {lock_time}"
 
-    def generate_mfa_code(self):
-        self.mfa_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-        self.notifications.append(f"MFA Code Generated: {self.mfa_code}")
+def microInvest(amount):
+    return f"Invested ${amount} in micro-investment platforms."
 
-    def validate_mfa(self, code):
-        if self.mfa_code == code:
-            self.notifications.append("MFA Code validated successfully.")
-            self.mfa_code = None
-            return True
-        else:
-            self.notifications.append("MFA Code validation failed.")
-            return False
+def goalTracking():
+    progress = {}
+    for goal in goals:
+        progress[goal] = random.randint(10, 90)
+    return progress
 
-    def get_global_summary(self):
-        return {
-            'global_balance': self.balance + self.savings_balance,
-            'total_loans': self.get_loans()[0],
-            'transaction_count': len(self.history),
-            'total_penalties': self.get_penalties()[0],
-            'total_investments': len(self.investments),
-            'system_locked': self.is_locked,
-            'currency': self.currency,
-            'credit_score': self.credit_score,
-            'emergency_fund': self.emergency_fund
-        }
+def businessExpenditureTracking():
+    total_business_expenses = sum(t['amount'] for t in transList if t['category'] == 'Business')
+    return total_business_expenses
+
+def emergencyFundsTracker():
+    return f"Emergency funds are at ${goals['Emergency Fund']}."
+
+def investmentPortfolioAnalysis():
+    portfolio = {'Stocks': 4000, 'Bonds': 2000, 'Real Estate': 8000, 'Crypto': 1500}
+    return portfolio
+
+def interactiveFinanceDashboard():
+    return {
+        'Dashboards': customDashboards(),
+        'Advisor': advancedFinancialAdvisor(),
+        'Crypto': manageCrypto(),
+        'Income Prediction': incomePrediction(),
+        'Collaborative Budgeting': collaborativeBudgets(),
+        'Debt Management': calculateDebtConsolidation([2000, 5000, 3000]),
+        'Loan Calculator': calcLoan(10000, 5, 15),
+        'Expense Classification': [expenseClassification(t) for t in transList],
+        'Financial Lockdown': financialLockdown('2025-01-01'),
+        'Business Tracking': businessExpenditureTracking(),
+        'Goal Progress': goalTracking(),
+        'Investment Analysis': investmentPortfolioAnalysis(),
+        'Emergency Funds': emergencyFundsTracker(),
+        'Round-Up Savings': roundUpSavings(),
+        'Investment Management': automaticInvestmentManagement(),
+        'News Feed': personalNewsFeed(),
+        'Fraud Detection': detectFraud(randTrans()),
+        'Micro Investments': microInvest(100)
+    }
+
+def startSystem():
+    dashboard = interactiveFinanceDashboard()
+    for feature, output in dashboard.items():
+        print(f"{feature}: {output}")
+
+startSystem()
