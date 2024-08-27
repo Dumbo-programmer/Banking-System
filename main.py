@@ -64,7 +64,6 @@ def addGoal(name, amt):
 def viewGoals():
     return goals
 
-# Adding more feature complexity
 def viewBalance():
     total_balance = 0
     for account in accounts:
@@ -193,7 +192,40 @@ def interactiveFinanceDashboard():
         'Micro Investments': microInvest(100)
     }
 
+# Adding user interaction through questions
+def askUserQuestions():
+    print("Welcome to the financial management system!")
+    user_name = input("Please enter your name: ")
+    print(f"Hello, {user_name}! Let's set up your financial dashboard.")
+    
+    income = float(input("Enter your monthly income: "))
+    savings_goal = float(input("Enter your savings goal: "))
+    current_savings = float(input("Enter your current savings amount: "))
+    
+    print("Calculating your savings plan...")
+    months_to_goal = (savings_goal - current_savings) / income
+    print(f"It will take you approximately {months_to_goal:.2f} months to reach your savings goal of ${savings_goal}.")
+    
+    invest_option = input("Would you like to invest your savings? (yes/no): ")
+    if invest_option.lower() == 'yes':
+        invest_amount = float(input("How much would you like to invest? "))
+        investment_return = invest_amount * randFloat(1.05, 1.2)
+        print(f"Your investment could potentially grow to ${investment_return:.2f}.")
+    else:
+        print("No investment made. Continuing with savings plan.")
+    
+    print("Setting up personalized budget categories...")
+    for cat in budgets.keys():
+        user_budget = float(input(f"Enter budget for {cat}: "))
+        addBudget(cat, user_budget)
+    
+    print("Finalizing your setup...")
+    custom_dashboard = customDashboards()
+    print(f"{user_name}, your custom dashboard is ready!")
+    return custom_dashboard
+
 def startSystem():
+    askUserQuestions()
     dashboard = interactiveFinanceDashboard()
     for feature, output in dashboard.items():
         print(f"{feature}: {output}")
