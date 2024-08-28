@@ -1,5 +1,5 @@
-### Personal Finance Tracker
-This Python script is a comprehensive tool designed to help users manage their personal finances by generating random financial data and providing various functionalities for financial tracking and analysis.
+### Banking System
+This Python script is a comprehensive tool designed to help users manage their finances by generating random financial data and providing various functionalities for tracking and analysis.
 
 ## Features
 ### Random Data Generation:
