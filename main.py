@@ -2,6 +2,10 @@ import random
 import string
 import datetime
 
+import random
+import string
+import datetime
+
 def randStr(n):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=n))
 
@@ -305,3 +309,146 @@ def interactiveFinanceDashboard():
         'Annual Tax Preparation Assistant': annualTaxPreparationAssistant()
         
             }
+
+def main():
+    while True:
+        print("\nFinancial Management System")
+        print("1. View Accounts")
+        print("2. Add Transaction")
+        print("3. View Budgets")
+        print("4. Add Budget")
+        print("5. View Goals")
+        print("6. Add Goal")
+        print("7. View Balance")
+        print("8. Check Budgets")
+        print("9. View Transactions")
+        print("10. Generate Income Prediction")
+        print("11. Collaborative Budgets")
+        print("12. Calculate Loan Payment")
+        print("13. Expense Classification")
+        print("14. Manage Crypto Assets")
+        print("15. Detect Fraud")
+        print("16. Calculate Debt Consolidation")
+        print("17. Get Financial Advice")
+        print("18. Custom Dashboards")
+        print("19. Personal News Feed")
+        print("20. Round Up Savings")
+        print("21. Automatic Investment Management")
+        print("22. Financial Lockdown")
+        print("23. Micro Investment")
+        print("24. Goal Tracking")
+        print("25. Business Expenditure Tracking")
+        print("26. Emergency Funds Tracker")
+        print("27. Investment Portfolio Analysis")
+        print("28. Expense Categorization Analysis")
+        print("29. Investment Diversification Checker")
+        print("30. Financial Goal Achievement Tracker")
+        print("31. Monthly Spending Reports")
+        print("32. Debt Reduction Strategy")
+        print("33. Annual Tax Preparation Assistant")
+        print("34. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            for acc_id, acc_info in accounts.items():
+                print(f"Account ID: {acc_id}, Balance: ${acc_info['balance']:.2f}")
+        elif choice == '2':
+            acc_id = input("Enter account ID: ")
+            if acc_id in accounts:
+                trans = randTrans()  # Example transaction
+                addTransaction(acc_id, trans)
+                print("Transaction added.")
+            else:
+                print("Account ID not found.")
+        elif choice == '3':
+            print(viewBudgets())
+        elif choice == '4':
+            category = input("Enter budget category: ")
+            amount = float(input("Enter budget amount: "))
+            addBudget(category, amount)
+            print("Budget updated.")
+        elif choice == '5':
+            print(viewGoals())
+        elif choice == '6':
+            goal_name = input("Enter goal name: ")
+            amount = float(input("Enter goal amount: "))
+            addGoal(goal_name, amount)
+            print("Goal added.")
+        elif choice == '7':
+            print(f"Total Balance: ${viewBalance():.2f}")
+        elif choice == '8':
+            print(checkBudgets())
+        elif choice == '9':
+            acc_id = input("Enter account ID: ")
+            if acc_id in accounts:
+                transactions = viewTransactions(acc_id)
+                for trans in transactions:
+                    print(trans)
+            else:
+                print("Account ID not found.")
+        elif choice == '10':
+            print(incomePrediction())
+        elif choice == '11':
+            print(collaborativeBudgets())
+        elif choice == '12':
+            loan_amount = float(input("Enter loan amount: "))
+            interest_rate = float(input("Enter interest rate (%): "))
+            term_years = int(input("Enter term (years): "))
+            print(f"Monthly Payment: ${calcLoan(loan_amount, interest_rate, term_years):.2f}")
+        elif choice == '13':
+            transaction = randTrans()
+            print(f"Transaction Classification: {expenseClassification(transaction)}")
+        elif choice == '14':
+            print(manageCrypto())
+        elif choice == '15':
+            transaction = randTrans()
+            print(f"Fraud Detection: {'Suspicious' if detectFraud(transaction) else 'Not Suspicious'}")
+        elif choice == '16':
+            debts = [float(d) for d in input("Enter debts (comma separated): ").split(',')]
+            print(f"Debt Consolidation: ${calculateDebtConsolidation(debts):.2f}")
+        elif choice == '17':
+            print(advancedFinancialAdvisor())
+        elif choice == '18':
+            print(customDashboards())
+        elif choice == '19':
+            print(personalNewsFeed())
+        elif choice == '20':
+            roundUpSavings()
+            print("Round-Up Savings processed.")
+        elif choice == '21':
+            print(automaticInvestmentManagement())
+        elif choice == '22':
+            lock_time = input("Enter lock time (e.g., '2025-01-01'): ")
+            print(financialLockdown(lock_time))
+        elif choice == '23':
+            amount = float(input("Enter micro-investment amount: "))
+            print(microInvest(amount))
+        elif choice == '24':
+            print(goalTracking())
+        elif choice == '25':
+            print(businessExpenditureTracking())
+        elif choice == '26':
+            print(emergencyFundsTracker())
+        elif choice == '27':
+            print(investmentPortfolioAnalysis())
+        elif choice == '28':
+            print(expenseCategorizationAnalysis())
+        elif choice == '29':
+            print(investmentDiversificationChecker())
+        elif choice == '30':
+            print(financialGoalAchievementTracker())
+        elif choice == '31':
+            print(monthlySpendingReports())
+        elif choice == '32':
+            print(debtReductionStrategy())
+        elif choice == '33':
+            print(annualTaxPreparationAssistant())
+        elif choice == '34':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
