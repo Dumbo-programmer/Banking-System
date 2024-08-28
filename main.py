@@ -172,6 +172,63 @@ def investmentPortfolioAnalysis():
     portfolio = {'Stocks': 4000, 'Bonds': 2000, 'Real Estate': 8000, 'Crypto': 1500, 'Precious Metals': 2000}
     return portfolio
 
+def expenseCategorizationAnalysis():
+    # Analyze how expenses are distributed across categories
+    category_expenses = {}
+    for t in transList:
+        if t['category'] not in category_expenses:
+            category_expenses[t['category']] = 0
+        category_expenses[t['category']] += t['amount']
+    return category_expenses
+
+def investmentDiversificationChecker():
+    # Check if investments are well-diversified
+    investments = {'Stocks': 5000, 'Bonds': 3000, 'Real Estate': 10000, 'Crypto': 2000, 'Precious Metals': 3000}
+    total_investment = sum(investments.values())
+    diversification = {k: (v / total_investment) * 100 for k, v in investments.items()}
+    return diversification
+
+def financialGoalAchievementTracker():
+    # Track progress towards financial goals
+    progress = {}
+    for goal in goals:
+        progress[goal] = (goals[goal] - random.randint(0, 10000))  # Simulating progress
+    return progress
+
+def monthlySpendingReports():
+    # Generate a report of spending for each month
+    monthly_report = {}
+    for t in transList:
+        month = t['date'].strftime('%Y-%m')
+        if month not in monthly_report:
+            monthly_report[month] = 0
+        monthly_report[month] += t['amount']
+    return monthly_report
+
+def debtReductionStrategy():
+    # Strategy to reduce debt based on available balance and interest rates
+    total_debt = 10000  # Example value
+    available_balance = viewBalance()
+    if available_balance > total_debt:
+        strategy = 'Pay off debt in full.'
+    else:
+        strategy = 'Pay minimum payments and allocate any extra funds towards debt.'
+    return strategy
+
+def annualTaxPreparationAssistant():
+    # Assist with annual tax preparation
+    tax_estimation = estimateTaxes()
+    tax_deductions = {
+        'Charitable Donations': sum(t['amount'] for t in transList if t['category'] == 'Charity'),
+        'Medical Expenses': sum(t['amount'] for t in transList if t['category'] == 'Health'),
+        'Mortgage Interest': 1200  # Example value
+    }
+    return {
+        'Estimated Taxes': tax_estimation,
+        'Tax Deductions': tax_deductions
+    }
+
+
 def interactiveFinanceDashboard():
     return {
         'Dashboards': customDashboards(),
@@ -240,167 +297,11 @@ def interactiveFinanceDashboard():
         'Cash Flow Forecasting': forecastCashFlow(),
         'Real-Time Market Analysis': analyzeMarketTrends(),
         'Interactive Budget Reports': interactiveBudgetReports(),
-        'Expense Categorization Tool': categorizeExpenses(),
-        'Automated Bill Payments': automateBillPayments(),
-        'Debt Snowball Tool': debtSnowballStrategy(),
-        'Home Loan Prequalification': prequalifyHomeLoan(),
-        'Student Loan Refinancing Tool': refinanceStudentLoans(),
-        'Family Vacation Budgeting': planFamilyVacationBudget(),
-        'Side Income Tracking': trackSideIncome(),
-        'Future Value Estimator': estimateFutureValue(),
-        'Retirement Savings Projection': projectRetirementSavings(),
-        'Emergency Budget Planning': planEmergencyBudget(),
-        'Annual Spending Review': reviewAnnualSpending(),
-        'Lifestyle Inflation Calculator': calculateLifestyleInflation(),
-        '401(k) Contribution Calculator': calculate401kContributions(),
-        'Self-Employment Tax Estimator': estimateSelfEmploymentTax(),
-        'Daily Cash Flow Management': manageDailyCashFlow(),
-        'Online Shopping Tracker': trackOnlineShopping(),
-        'Refund Tracker': manageRefunds(),
-        'Home Energy Cost Calculator': calculateHomeEnergyCosts(),
-        'Weekly Savings Challenge': weeklySavingsChallenges(),
-        'Charitable Giving Strategy': planCharitableGiving(),
-        'Business Travel Expenses Tracker': trackBusinessTravelExpenses(),
-        'Medical Expense Planner': planMedicalExpenses(),
-        'Education Cost Estimator': estimateEducationCosts(),
-        'Insurance Premium Calculator': calculateInsurancePremium(),
-        'Household Chore Budgeting': budgetHouseholdChores(),
-        'Investment Rebalancing Tool': rebalanceInvestments(),
-        'High-Interest Debt Alert': alertHighInterestDebt(),
-        'Spousal Budget Collaboration': collaborateSpousalBudget(),
-        'Flexible Spending Account Tracker': trackFSA(),
-        'Childcare Expense Tracker': manageChildcareExpenses(),
-        'Subscription Renewal Alerts': alertSubscriptionRenewal(),
-        'Shared Expense Splitter': splitSharedExpenses(),
-        'Stock Option Portfolio Tracker': trackStockOptions(),
-        'Recurring Payment Tracker': manageRecurringPayments(),
-        'Property Tax Estimator': estimatePropertyTax(),
-        'Future Budget Forecasting': forecastFutureBudget(),
-        'Annual Financial Planning Tool': planAnnualFinances(),
-        'Debt-to-Income Ratio Calculator': calculateDTIRatio(),
-        'Work-Life Balance Tracker': trackWorkLifeBalance(),
-        'Charitable Giving Match Calculator': matchCharitableGiving(),
-        'Crowdfunding Investment Tracker': trackCrowdfundingInvestments(),
-        'Salary Negotiation Tool': negotiateSalary(),
-        'Business Profit Margin Calculator': calculateProfitMargin(),
-        'Freelance Income Estimator': estimateFreelanceIncome(),
-        'Event Budgeting Tool': planEventBudget(),
-        'Personal Financial Snapshot': financialSnapshot(),
-        'Online Subscription Budgeting': budgetOnlineSubscriptions(),
-        'Family Financial Goals Tracker': trackFamilyFinancialGoals(),
-        'Charity Fundraising Tracker': trackCharityFundraising(),
-        'Vehicle Lease Calculator': calculateLeaseCosts(),
-        'Rental Income Tracker': trackRentalIncome(),
-        'Dividends Tracker': manageDividends(),
-        'Mobile Payment Tracker': trackMobilePayments(),
-        'Debt Avalanche Tool': debtAvalancheStrategy(),
-        'Financial Accountability Partner': partnerAccountability(),
-        'Peer-to-Peer Lending Tracker': trackP2PLending(),
-        'Luxury Item Budgeting': budgetLuxuryItems(),
-        'Family Financial Meeting Planner': planFamilyFinanceMeetings(),
-        'Financial Goals Accountability': goalAccountability(),
-        'Virtual Assistant Financial Tracker': trackVirtualAssistant(),
-        'Long-Term Financial Vision Board': createVisionBoard(),
-        'Emergency Cash Stash Planner': planEmergencyCash(),
-        'Pet Insurance Premium Calculator': calculatePetInsurance(),
-        'Side Hustle Budgeting': budgetSideHustle(),
-        'Local Business Investment Tracker': trackLocalBusinessInvestments(),
-        'Remote Work Expense Tracker': trackRemoteWorkExpenses(),
-        'Personal Finance Podcast': manageFinancePodcast(),
-        'Group Financial Challenges': manageGroupFinanceChallenges(),
-        'Shared Goal Tracker': trackSharedGoals(),
-        'Real Estate Investment Planning Tool': planRealEstateInvestments(),
-        'Personal Shopping List Tracker': trackShoppingList(),
-        'Luxury Travel Budgeting Tool': budgetLuxuryTravel(),
-        'Professional Development Budgeting': budgetProfessionalDevelopment(),
-        'Shared Wallet': manageSharedWallet(),
-        'Cash Flow Analyzer': analyzeCashFlow(),
-        'Advanced Tax Planning Tool': planAdvancedTaxes(),
-        'Rent vs. Buy Calculator': calculateRentVsBuy(),
-        'Investment Club Manager': manageInvestmentClub(),
-        'Debt Forgiveness Tracker': trackDebtForgiveness(),
-        'Time Off Budgeting Tool': budgetTimeOff(),
-        'Vacation Savings Plan': saveForVacation(),
-        'Retirement Income Estimator': estimateRetirementIncome(),
-        'Self-Care Budgeting Tool': budgetSelfCare(),
-        'Debt Consolidation Tracker': trackDebtConsolidation(),
-        'Job Offer Comparison Tool': compareJobOffers(),
-        'Side Business Budgeting': budgetSideBusiness(),
-        'Financial Emergency Planning Tool': planFinancialEmergencies(),
-        'Real-Time Expense Alerts': alertRealTimeExpenses(),
-        'Financial Mentor Program': manageFinanceMentor(),
-        'Annual Bonus Budgeting': budgetAnnualBonus(),
-        'Community Fundraising Tracker': trackCommunityFundraising(),
-        'Financial Trend Analyzer': analyzeFinanceTrends(),
-        'Work-From-Home Budgeting Tool': budgetWorkFromHome(),
-        'Mental Health Budgeting Tool': budgetMentalHealth(),
-        'Short-Term Rental Income Estimator': estimateShortTermRentalIncome(),
-        'Annual Charity Giving Planner': planAnnualCharityGiving(),
-        'Entrepreneurship Budgeting Tool': budgetEntrepreneurship(),
-        'Disaster Recovery Fund Tracker': trackDisasterRecoveryFund(),
-        'Crowdfunding Campaign Manager': manageCrowdfundingCampaigns(),
-        'Holiday Gifting Budget': budgetHolidayGifts(),
-        'Personal Debt Recovery Tracker': trackDebtRecovery(),
-        'Financial Independence Planner': planFinancialIndependence(),
-        'Pet Care Budget Planner': planPetCareBudget(),
-        'Subscription Budget Optimization Tool': optimizeSubscriptionBudget(),
-        'Advanced Bill Payment Scheduler': scheduleAdvancedBillPayments(),
-        'Crowdfunding Project Analysis': analyzeCrowdfundingProjects(),
-        'Luxury Good Purchase Tracker': trackLuxuryGoodPurchases(),
-        'Life Event Budgeting Tool': budgetLifeEvents(),
-        'Online Course Budget Planner': planOnlineCourses(),
-        'Professional Networking Budgeting': budgetNetworking(),
-        'Child Education Savings Tracker': trackChildEducationSavings(),
-        'Remote Work Savings Estimator': estimateRemoteWorkSavings(),
-        'Emergency Medical Fund Tracker': trackEmergencyMedicalFunds(),
-        'Luxury Vehicle Purchase Planner': planLuxuryVehiclePurchase(),
-        'Personal Wealth Management Tool': managePersonalWealth(),
-        'Retirement Community Savings Planner': planRetirementCommunitySavings(),
-        'Community Investment Tracker': trackCommunityInvestments(),
-        'Future Tax Liability Estimator': estimateFutureTaxLiability(),
-        'Financial Behavior Analysis Tool': analyzeFinancialBehavior(),
-        'Medical Expense Tax Deduction Estimator': estimateMedicalTaxDeductions(),
-        'Debt Repayment Snowball Planner': planDebtRepaymentSnowball(),
-        'Pet Care Savings Estimator': estimatePetCareSavings(),
-        'Custom Financial Goal Tracker': trackCustomFinancialGoals(),
-        'Home Energy Efficiency Planner': planHomeEnergyEfficiency(),
-        'Professional Liability Insurance Estimator': estimateProfessionalLiabilityInsurance(),
-        'Small Business Financing Tool': planSmallBusinessFinancing(),
-        'Self-Employed Health Insurance Tracker': trackSelfEmployedHealthInsurance(),
-        'Group Subscription Budgeting Tool': budgetGroupSubscriptions(),
-        'Extended Family Financial Planner': planExtendedFamilyFinances(),
-        'Comprehensive Income Analysis Tool': analyzeComprehensiveIncome(),
-        'Environmental Impact Budgeting Tool': budgetEnvironmentalImpact(),
-        'Charitable Trust Fund Tracker': trackCharitableTrustFund(),
-        'Personal Health and Wellness Budgeting Tool': budgetHealthAndWellness(),
-        'Startup Fundraising Tracker': trackStartupFundraising(),
-        'Social Impact Investment Tracker': trackSocialImpactInvestments(),
-        'Real-Time Expense Sharing Tool': shareRealTimeExpenses(),
-        'Rental Property Renovation Planner': planRentalPropertyRenovation(),
-        'Health Savings Contribution Calculator': calculateHealthSavingsContributions(),
-        'Home Office Tax Deduction Estimator': estimateHomeOfficeTaxDeductions(),
-        'Vehicle Insurance Deductible Planner': planVehicleInsuranceDeductibles(),
-        'Luxury Lifestyle Budget Planner': planLuxuryLifestyleBudget(),
-        'Tax-Advantaged Investment Tracker': trackTaxAdvantagedInvestments(),
-        'Business Expansion Financing Tool': planBusinessExpansionFinancing(),
-        'Home-Based Business Expense Tracker': trackHomeBasedBusinessExpenses(),
-        'Luxury Property Investment Planner': planLuxuryPropertyInvestments(),
-        'Personal Travel Expense Sharing Tool': sharePersonalTravelExpenses(),
-        'Professional Membership Fee Tracker': trackProfessionalMembershipFees(),
-        'Vehicle Purchase Financing Tool': planVehiclePurchaseFinancing(),
-        'Luxury Vacation Club Tracker': trackLuxuryVacationClub(),
-        'Cryptocurrency Tax Liability Estimator': estimateCryptocurrencyTaxLiability(),
-        'Group Vacation Budgeting Tool': budgetGroupVacation(),
-        'Home Improvement Tax Deduction Estimator': estimateHomeImprovementTaxDeductions(),
-        'Luxury Fitness Membership Tracker': trackLuxuryFitnessMembership(),
-        'Environmental Conservation Fund Tracker': trackConservationFund(),
-        'Luxury Event Planning Tool': planLuxuryEvents(),
-        'Small Business Sustainability Planner': planSmallBusinessSustainability(),
-        'Real Estate Tax Planning Tool': planRealEstateTaxes(),
-        'Online Marketplace Income Tracker': trackMarketplaceIncome(),
-        'Charity Walk/Run Fundraising Tracker': trackCharityWalkRunFundraising(),
-        'Personal Finance Research Tool': researchPersonalFinance(),
-        'Vacation Rental Income Estimator': estimateVacationRentalIncome(),
-        'Group Investment Portfolio Tracker': trackGroupInvestments(),
-        'Future Retirement Community Planner': planFutureRetirementCommunity(),
-    }
+        'Expense Categorization Analysis': expenseCategorizationAnalysis(),
+        'Investment Diversification Checker': investmentDiversificationChecker(),
+        'Financial Goal Achievement Tracker': financialGoalAchievementTracker(),
+        'Monthly Spending Reports': monthlySpendingReports(),
+        'Debt Reduction Strategy': debtReductionStrategy(),
+        'Annual Tax Preparation Assistant': annualTaxPreparationAssistant()
+        
+            }
