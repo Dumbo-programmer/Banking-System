@@ -112,11 +112,11 @@ Python 3.x
 Standard Python libraries: random, string, datetime
 
 ### Usage
-- Initialize the System: Run the script to generate initial data.
-- Manage Accounts: Use functions to add transactions, view account balances, and more.
-- Track Budgets and Goals: Manage and view budgets and financial goals.
-- Use Financial Tools: Utilize tools for loan calculations, investment management, and financial advice.
+
 ![image](https://github.com/user-attachments/assets/9f50a438-f9de-4e41-9bf5-d63d8a82c251)
+![image](https://github.com/user-attachments/assets/4bff3969-82d3-49d6-9c4e-484dc008ad76)
+![image](https://github.com/user-attachments/assets/abeb384a-f9c5-4eb1-a1f9-d86b04a8c5d5)
+![image](https://github.com/user-attachments/assets/90f58d67-0374-4685-86f2-a4c897e66c58)
 
 - View Accounts: View details of all existing accounts, including their balances.
 - Add Transaction: Add a new transaction to a specified account.
@@ -152,6 +152,7 @@ Standard Python libraries: random, string, datetime
 - Debt Reduction Strategy: Get a strategy for reducing debt based on current financial status.
 - Annual Tax Preparation Assistant: Assist with estimating taxes and identifying potential deductions for the year.
 
+Download .exe from the release
 For example:
 ```
 python
