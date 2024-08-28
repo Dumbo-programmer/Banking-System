@@ -116,6 +116,41 @@ Standard Python libraries: random, string, datetime
 - Manage Accounts: Use functions to add transactions, view account balances, and more.
 - Track Budgets and Goals: Manage and view budgets and financial goals.
 - Use Financial Tools: Utilize tools for loan calculations, investment management, and financial advice.
+![image](https://github.com/user-attachments/assets/9f50a438-f9de-4e41-9bf5-d63d8a82c251)
+
+- View Accounts: View details of all existing accounts, including their balances.
+- Add Transaction: Add a new transaction to a specified account.
+- View Budgets: Display the current budget allocations for various categories.
+- Add Budget: Update or add a new budget for a specific category.
+- View Goals: Review all financial goals and their target amounts.
+- Add Goal: Create or update a financial goal with a specific target amount.
+- View Balance: Check the total balance across all accounts.
+- Check Budgets: Review budget utilization and identify any categories that have exceeded their budgets.
+- View Transactions: View all transactions associated with a specific account.
+- Generate Income Prediction: Get a prediction of expected income for various categories.
+- Collaborative Budgets: View an overview of shared budgeting across all categories.
+- Calculate Loan Payment: Calculate the monthly payment for a loan based on the amount, interest rate, and term.
+- Expense Classification: Classify a transaction as either Income or Expense.
+- Manage Crypto Assets: View details of cryptocurrency holdings.
+- Detect Fraud: Check a transaction for potential fraudulent activity.
+- Calculate Debt Consolidation: Determine the average monthly payment needed to consolidate multiple debts.
+- Get Financial Advice: Receive personalized financial advice for better management and investment.
+- Custom Dashboards: View different dashboard layouts and widgets for financial management.
+- Personal News Feed: Read the latest financial news and updates.
+- Round Up Savings: Automatically round up transaction amounts to the nearest dollar and add the difference to savings.
+- Automatic Investment Management: Review and manage automatic investment allocations across various asset classes.
+- Financial Lockdown: Lock all financial transactions until a specified date.
+- Micro Investment: Invest a small amount in micro-investment platforms.
+- Goal Tracking: Track progress toward achieving financial goals.
+- Business Expenditure Tracking: Review and summarize business-related expenses.
+- Emergency Funds Tracker: Check the current status of emergency funds.
+- Investment Portfolio Analysis: Analyze the composition and performance of your investment portfolio.
+- Expense Categorization Analysis: Analyze and summarize how expenses are distributed across different categories.
+- Investment Diversification Checker: Evaluate the diversification of your investment portfolio.
+- Financial Goal Achievement Tracker: Track progress toward achieving financial goals.
+- Monthly Spending Reports: Generate reports detailing spending for each month.
+- Debt Reduction Strategy: Get a strategy for reducing debt based on current financial status.
+- Annual Tax Preparation Assistant: Assist with estimating taxes and identifying potential deductions for the year.
 
 For example:
 ```
